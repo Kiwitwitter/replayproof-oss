@@ -1,0 +1,37 @@
+{
+  "target": "http://127.0.0.1:8765/webhook",
+  "probe": "http://127.0.0.1:8765/_test/state",
+  "reset": "http://127.0.0.1:8765/_test/reset",
+  "cases": [
+    {
+      "name": "Invoice delivery retried three times",
+      "kind": "duplicate",
+      "event": {"id": "evt_paid_001", "type": "invoice.paid", "created": 100, "data": {"object": {"amount_paid": 12000}}},
+      "repeat": 3,
+      "max_side_effect_delta": 1
+    },
+    {
+      "name": "Eight concurrent duplicate invoice deliveries",
+      "kind": "parallel-duplicate",
+      "event": {"id": "evt_paid_002", "type": "invoice.paid", "created": 100},
+      "repeat": 8,
+      "max_side_effect_delta": 1
+    },
+    {
+      "name": "Retry after acknowledgement failure",
+      "kind": "retry",
+      "event": {"id": "evt_paid_failonce", "type": "invoice.paid", "created": 100},
+      "repeat": 2,
+      "max_side_effect_delta": 1
+    },
+    {
+      "name": "Out-of-order subscription events",
+      "kind": "reorder",
+      "events": [
+        {"id": "evt_deleted", "type": "customer.subscription.deleted", "created": 200},
+        {"id": "evt_created", "type": "customer.subscription.created", "created": 100}
+      ],
+      "expected_state": {"subscription_status": "canceled"}
+    }
+  ]
+}
