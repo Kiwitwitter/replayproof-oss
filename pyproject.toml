@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "replayproof"
+version = "0.1.0"
+description = "Staging-only webhook chaos testing with observable business-side-effect assertions"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+keywords = ["webhook", "stripe", "idempotency", "chaos", "test"]
+
+[project.scripts]
+replayproof = "replayproof.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["replayproof*"]
